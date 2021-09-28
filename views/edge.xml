@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Edge -->
+    <record id="openems_edge_tree" model="ir.ui.view">
+        <field name="name">OpenEMS Edge: Tree</field>
+        <field name="model">openems.edge</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="openems_is_connected==True and openems_sum_state_level=='fault'" decoration-warning="openems_is_connected==True and openems_sum_state_level=='warning'" decoration-success="openems_is_connected==True" decoration-info="openems_is_connected==True and openems_sum_state_level=='info'" decoration-it="openems_is_connected!=True">
+                <field name="name" string="OpenEMS-Nummer" />
+                <field name="comment" string="Bezeichnung" />
+                <field name="openems_version" string="OE Version" />
+                <field name="openems_is_connected" string="OE Connected" />
+                <field name="lastmessage" />
+                <field name="openems_sum_state_level" string="OE State" />
+                <field name="internalnote" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="openems_edge_search_view">
+        <field name="name">OpenEMS Edge: Search</field>
+        <field name="model">openems.edge</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="OpenEMS-Nummer" />
+                <field name="comment" string="Bezeichnung" />
+                <field name="internalnote" />
+                <field name="openems_config_components" />
+                <field name="openems_sum_state_level" />
+                <field name="openems_version" />
+                <filter string="Archived" name="inactive" domain="[('active','=',False)]" />
+                <group>
+                    <filter name="group_by_openems_version" string="OpenEMS Version" context="{'group_by': 'openems_version'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="openems_edge_form" model="ir.ui.view">
+        <field name="name">OpenEMS Edge: Form</field>
+        <field name="model">openems.edge</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}" />
+                        </button>
+                    </div>
+                    <group>
+                        <label for="comment" />
+                        <h1>
+                            <field name="comment" nolabel="True" />
+                        </h1>
+                        <field name="name" />
+                        <field name="monitoring_url" widget="url" />
+                    </group>
+                    <notebook>
+                        <page string="General">
+                            <group>
+                                <field name="internalnote" />
+                            </group>
+                            <group string="Status">
+                                <field name="openems_is_connected" string="Is connected" />
+                                <field name="openems_sum_state_level" string="Systemstatus" decoration-danger="openems_is_connected==True and openems_sum_state_level=='fault'" decoration-warning="openems_is_connected==True and openems_sum_state_level=='warning'" decoration-success="openems_is_connected==True" decoration-info="openems_is_connected==True and openems_sum_state_level=='info'" decoration-it="openems_is_connected!=True" />
+                                <field name="openems_version" />
+                                <field name="lastmessage" readonly="True" nolabel="True" />
+                                <field name="lastupdate" readonly="True" nolabel="True" />
+                            </group>
+                        </page>
+                        <page string="Sicherheit">
+                            <group>
+                                <field name="user_role_ids" string="Zugriffsrollen im Online-Monitoring">
+                                    <tree editable="bottom">
+                                        <field name="user_id" />
+                                        <field name="role" />
+                                    </tree>
+                                </field>
+                            </group>
+                            <group>
+                                <field name="apikey" />
+                                <field name="setup_password" />
+                            </group>
+                        </page>
+                        <page string="Inbetriebnahme">
+                            <group>
+                                <field name="setup_protocol_ids" string="Inbetriebnahme Protokolle">
+                                    <tree>
+                                        <field name="create_date" />
+                                        <field name="installer_id" />
+                                        <field name="customer_id" />
+                                        <field name="different_location_id" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Konfiguration">
+                            <group>
+                                <field name="openems_config_components" readonly="True" />
+                            </group>
+                        </page>
+                        <page string="Konfigurationsänderungen">
+                            <group>
+                                <field name="openems_config_update_ids" readonly="True" />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="openems_edge_user_role_tree" model="ir.ui.view">
+        <field name="name">OpenEMS EdgeUserRole: Tree</field>
+        <field name="model">openems.edge_user_role</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="user_id" />
+                <field name="user_id" />
+                <field name="role" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_openems_edge" model="ir.actions.act_window">
+        <field name="name">Edges</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">openems.edge</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="openems_edge_search_view" />
+    </record>
+
+    <!-- OpenEMS Configuration Updates -->
+    <record id="action_openems_openemsconfigupdate" model="ir.actions.act_window">
+        <field name="name">OpenEMS Configuration Updates</field>
+        <field name="res_model">openems.openemsconfigupdate</field>
+    </record>
+
+    <record id="openems_openemsconfigupdate_tree" model="ir.ui.view">
+        <field name="name">OpenEMS Configuration Updates: Tree</field>
+        <field name="model">openems.openemsconfigupdate</field>
+        <field name="arch" type="xml">
+            <tree string="OpenEMS Configuration Updates">
+                <field name="create_date" />
+                <field name="edge_id" />
+                <field name="teaser" string="Details" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="openems_openemsconfigupdate_form" model="ir.ui.view">
+        <field name="name">OpenEMS Configuration Updates: Form</field>
+        <field name="model">openems.openemsconfigupdate</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="edge_id" readonly="True" />
+                        <field name="teaser" readonly="True" />
+                        <field name="details" readonly="True" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem sequence="100" id="menu_openems" name="OpenEMS" web_icon="openems,static/description/openems-icon.jpg" />
+    <menuitem id="menu_openems_content" parent="menu_openems" name="OpenEMS" />
+    <menuitem id="menu_openems_content_edges" parent="menu_openems_content" action="action_openems_edge" />
+    <menuitem id="menu_openems_admin" parent="menu_openems" name="Administration" />
+    <menuitem id="menu_openems_admin_openemsconfigupdate" parent="menu_openems_admin" action="action_openems_openemsconfigupdate" />
+</odoo>
