@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+   <data>
+      <function model="ir.config_parameter" name="set_param" eval="('edge.monitoring.url', 'http://localhostce/')"/>
+   </data>
+</odoo>
