@@ -3,7 +3,7 @@
     <report
         id="action_openems_setup_protocol_report"
         string="OpenEMS Edge Setup Protocol"
-        model="fems.setup_protocol"
+        model="openems.setup_protocol"
         report_type="qweb-pdf"
         print_report_name="('IBN-' + object.openems_device_id.name + '-' + object.create_date.strftime('%d.%m.%Y'))"
         name="openems.report_openems_setup_protocol_template"
