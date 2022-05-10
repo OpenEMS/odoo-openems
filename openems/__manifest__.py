@@ -26,7 +26,7 @@
         "data/ir_config_parameter.xml",
         "data/res_partner_category.xml",
     ],
-    "demo": [],
+    "demo": ["data/demo.xml"],
     "js": [],
     "css": [],
     "qweb": [],
