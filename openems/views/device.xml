@@ -137,7 +137,6 @@
                             <group>
                                 <field name="apikey" />
                                 <field name="setup_password" />
-                                <field name="password_admin" />
                             </group>
                         </page>
                         <page string="Inbetriebnahme">
