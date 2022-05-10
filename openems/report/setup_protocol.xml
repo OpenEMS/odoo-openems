@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <report
-        id="action_openems_setup_protocol_report"
+        id="openems.action_openems_setup_protocol_report"
         string="OpenEMS Edge Setup Protocol"
         model="openems.setup_protocol"
         report_type="qweb-pdf"
