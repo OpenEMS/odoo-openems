@@ -63,6 +63,9 @@ class Device(models.Model):
     lastupdate = fields.Datetime("Last data update")
 
     # Verknüpfungen
+    systemmessage_ids = fields.One2many(
+        "fems.systemmessage", "device_id", string="Systemmessages"
+    )
     user_role_ids = fields.One2many(
         "openems.device_user_role", "device_id", string="Roles", tracking=True
     )
@@ -132,3 +135,20 @@ class OpenemsConfigUpdate(models.Model):
     device_id = fields.Many2one("openems.device", string="OpenEMS Edge")
     teaser = fields.Text("Update Details Teaser")
     details = fields.Html("Update Details")
+
+
+class Systemmessage(models.Model):
+    _name = "openems.systemmessage"
+    _description = "OpenEMS Edge Systemmessage"
+    _order = "create_date desc"
+
+    timestamp = fields.Datetime("Creation date")
+    device_id = fields.Many2one("openems.device", string="OpenEMS Edge")
+    text = fields.Text("Message")
+    text_teaser = fields.Char(compute="_compute_text_teaser")
+
+    @api.depends("text")
+    def _compute_text_teaser(self):
+        for rec in self:
+            # get up to 100 characters from first line
+            rec.text_teaser = rec.text.splitlines()[0][0:100] if rec.text else False

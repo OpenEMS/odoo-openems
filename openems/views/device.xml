@@ -2,7 +2,7 @@
 <odoo>
     <!-- Device -->
     <record id="openems_device_tree" model="ir.ui.view">
-        <field name="name">OpenEMS Edge Device: Tree</field>
+        <field name="name">Device: Tree</field>
         <field name="model">openems.device</field>
         <field name="arch" type="xml">
             <tree
@@ -25,8 +25,8 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="openems_device_search_view">
-        <field name="name">OpenEMS Edge Device: Search</field>
+    <record model="ir.ui.view" id="device_search_view">
+        <field name="name">Device: Search</field>
         <field name="model">openems.device</field>
         <field name="arch" type="xml">
             <search>
@@ -56,7 +56,7 @@
     </record>
 
     <record id="openems_device_form" model="ir.ui.view">
-        <field name="name">OpenEMS Edge Device: Form</field>
+        <field name="name">Device: Form</field>
         <field name="model">openems.device</field>
         <field name="arch" type="xml">
             <form>
@@ -171,6 +171,9 @@
                                 />
                             </group>
                         </page>
+                        <page string="Systemmessages">
+                            <field name="systemmessage_ids" readonly="True" />
+                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
@@ -186,7 +189,7 @@
     </record>
 
     <record id="openems_device_user_role_tree" model="ir.ui.view">
-        <field name="name">OpenEMS Edge DeviceUserRole: Tree</field>
+        <field name="name">Device DeviceUserRole: Tree</field>
         <field name="model">openems.device_user_role</field>
         <field name="arch" type="xml">
             <tree editable="bottom">
@@ -197,7 +200,7 @@
     </record>
 
     <record id="action_openems_device" model="ir.actions.act_window">
-        <field name="name">OpenEMS Edge Devices</field>
+        <field name="name">Devices</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">openems.device</field>
         <field name="view_mode">tree,form</field>
@@ -206,12 +209,12 @@
 
     <!-- OpenEMS Configuration Updates -->
     <record id="action_openems_openemsconfigupdate" model="ir.actions.act_window">
-        <field name="name">OpenEMS Edge Configuration Updates</field>
+        <field name="name">Device Configuration Updates</field>
         <field name="res_model">openems.openemsconfigupdate</field>
     </record>
 
     <record id="openems_openemsconfigupdate_tree" model="ir.ui.view">
-        <field name="name">OpenEMS Edge Configuration Updates: Tree</field>
+        <field name="name">Device Configuration Updates: Tree</field>
         <field name="model">openems.openemsconfigupdate</field>
         <field name="arch" type="xml">
             <tree string="OpenEMS Configuration Updates">
@@ -223,7 +226,7 @@
     </record>
 
     <record id="openems_openemsconfigupdate_form" model="ir.ui.view">
-        <field name="name">OpenEMS Edge Configuration Updates: Form</field>
+        <field name="name">Device Configuration Updates: Form</field>
         <field name="model">openems.openemsconfigupdate</field>
         <field name="arch" type="xml">
             <form>
@@ -238,12 +241,46 @@
         </field>
     </record>
 
+    <!-- Systemmessage -->
+    <record id="action_openems_systemmessage" model="ir.actions.act_window">
+        <field name="name">Systemmessages</field>
+        <field name="res_model">openems.systemmessage</field>
+    </record>
+
+    <record id="openems_systemmessage_tree" model="ir.ui.view">
+        <field name="name">Device Systemmessage: Tree</field>
+        <field name="model">openems.systemmessage</field>
+        <field name="arch" type="xml">
+            <tree string="Users">
+                <field name="device_id" />
+                <field name="timestamp" />
+                <field name="text_teaser" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="openems_systemmessage_form" model="ir.ui.view">
+        <field name="name">Device Systemmessage: Form</field>
+        <field name="model">openems.systemmessage</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="device_id" />
+                        <field name="timestamp" />
+                        <field name="text" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
     <!-- Menus -->
     <menuitem
         sequence="100"
         id="menu_openems"
         name="OpenEMS"
-        web_icon="openems,static/description/icon.png"
+        web_icon="openems,static/description/openems-icon.png"
     />
     <menuitem id="menu_openems_content" parent="menu_openems" name="OpenEMS Edge" />
     <menuitem
@@ -252,6 +289,11 @@
         action="action_openems_device"
     />
     <menuitem id="menu_openems_admin" parent="menu_openems" name="Administration" />
+    <menuitem
+        id="menu_openems_admin_systemmessages"
+        parent="menu_openems_admin"
+        action="action_openems_systemmessage"
+    />
     <menuitem
         id="menu_openems_admin_openemsconfigupdate"
         parent="menu_openems_admin"

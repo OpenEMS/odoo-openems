@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="openems_setup_protocol_form" model="ir.ui.view">
-        <field name="name">OpenEMS Edge SetupProtocol: Form</field>
+        <field name="name">SetupProtocol: Form</field>
         <field name="model">openems.setup_protocol</field>
         <field name="arch" type="xml">
             <form>
@@ -29,7 +29,7 @@
     </record>
 
     <record id="openems_setup_protocol_prodution_lot_tree" model="ir.ui.view">
-        <field name="name">OpenEMS Edge SetupProtocolProductionLot: Tree</field>
+        <field name="name">SetupProtocolProductionLot: Tree</field>
         <field name="model">openems.setup_protocol_production_lot</field>
         <field name="arch" type="xml">
             <tree editable="bottom">
@@ -42,7 +42,7 @@
     </record>
 
     <record id="openems_setup_protocol_item_tree" model="ir.ui.view">
-        <field name="name">OpenEMS Edge SetupProtocolItem: Tree</field>
+        <field name="name">SetupProtocolItem: Tree</field>
         <field name="model">openems.setup_protocol_item</field>
         <field name="arch" type="xml">
             <tree editable="bottom">
@@ -55,7 +55,7 @@
     </record>
 
     <record id="openems_admin_setup_protocol_tree" model="ir.ui.view">
-        <field name="name">OpenEMS Edge SetupProtocol: Tree</field>
+        <field name="name">SetupProtocol: Tree</field>
         <field name="model">openems.setup_protocol</field>
         <field name="arch" type="xml">
             <tree>

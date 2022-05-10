@@ -3,10 +3,8 @@
     <data noupdate="0">
         <record id="alerting_email_notify" model="mail.template">
             <field name="name">E-Mail Alerting</field>
-            <!--4=live 3=mailhog-->
-            <field name="mail_server_id">3</field>
             <field name="model_id" ref="model_fems_device_user_role" />
-            <field name="email_from">no-replye@openems.io</field>
+            <field name="email_from">no-reply@openems.io</field>
             <field name="email_to" />
             <field name="partner_to">${object.user_id.partner_id.id}</field>
             <field name="subject">OpenEMS Edge offline</field>

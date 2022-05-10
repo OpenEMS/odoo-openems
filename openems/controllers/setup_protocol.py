@@ -38,8 +38,8 @@ class SetupProtocol(http.Controller):
                 "res_model": "openems.device",
                 "res_id": device_rec[0]["id"],
                 "name": name,
-                "datas_fname": name,
-                "datas": base64.encodestring(data[0]),
+                "store_fname": name,
+                "datas": base64.b64encode(data[0]),
             }
         )
 

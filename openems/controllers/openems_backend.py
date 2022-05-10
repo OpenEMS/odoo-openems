@@ -52,9 +52,9 @@ class OpenemsBackend(http.Controller):
                 role = "guest"
 
             # Set specific user role
-            for edge_role_id in device_rec["user_role_ids"]:
+            for device_role_id in device_rec["user_role_ids"]:
                 for user_role_id in user_role_ids:
-                    if edge_role_id == user_role_id["id"]:
+                    if device_role_id == user_role_id["id"]:
                         role = user_role_id["role"]
 
             # Prepare result
