@@ -29,19 +29,19 @@ class OpenemsBackend(http.Controller):
             # Manager group
             global_role = "admin"
 
-        # Get specific Edge roles
-        openems_edge_user_role = http.request.env["openems.edge_user_role"]
-        user_role_ids = openems_edge_user_role.search_read(
+        # Get specific Device roles
+        device_user_role_model = http.request.env["openems.device_user_role"]
+        user_role_ids = device_user_role_model.search_read(
             [("user_id", "=", user_id)], ["id", "role"]
         )
 
-        # Get Edges
-        edge_model = http.request.env["openems.edge"]
-        edges = edge_model.search_read(
+        # Get Devices
+        device_model = http.request.env["openems.device"]
+        devices = device_model.search_read(
             [], ["id", "name", "user_role_ids", "comment", "producttype"]
         )
         devs = []
-        for edge_rec in edges:
+        for device_rec in devices:
             # Set user role per group
             role = "guest"
             if manager_group_id in user_rec["groups_id"]:
@@ -52,7 +52,7 @@ class OpenemsBackend(http.Controller):
                 role = "guest"
 
             # Set specific user role
-            for edge_role_id in edge_rec["user_role_ids"]:
+            for edge_role_id in device_rec["user_role_ids"]:
                 for user_role_id in user_role_ids:
                     if edge_role_id == user_role_id["id"]:
                         role = user_role_id["role"]
@@ -60,10 +60,10 @@ class OpenemsBackend(http.Controller):
             # Prepare result
             devs.append(
                 {
-                    "id": edge_rec["id"],
-                    "name": edge_rec["name"],
-                    "comment": edge_rec["comment"],
-                    "producttype": edge_rec["producttype"],
+                    "id": device_rec["id"],
+                    "name": device_rec["name"],
+                    "comment": device_rec["comment"],
+                    "producttype": device_rec["producttype"],
                     "role": role,
                 }
             )

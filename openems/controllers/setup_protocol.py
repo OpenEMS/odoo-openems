@@ -17,10 +17,10 @@ class SetupProtocol(http.Controller):
         if len(setup_protocol_record) != 1:
             raise ValueError("Setup protocol not found for id [" + edgeId + "]")
 
-        edge_model = request.env["openems.edge"]
-        edge_rec = edge_model.search_read([("name", "=", edgeId)])
-        if len(edge_rec) != 1:
-            raise ValueError("Edge not found for id [" + edgeId + "]")
+        device_model = request.env["openems.device"]
+        device_rec = device_model.search_read([("name", "=", edgeId)])
+        if len(device_rec) != 1:
+            raise ValueError("Device not found for id [" + edgeId + "]")
 
         name = (
             "IBN-"
@@ -35,8 +35,8 @@ class SetupProtocol(http.Controller):
         )._render_qweb_pdf([setupProtocolId])
         attachment = request.env["ir.attachment"].create(
             {
-                "res_model": "openems.edge",
-                "res_id": edge_rec[0]["id"],
+                "res_model": "openems.device",
+                "res_id": device_rec[0]["id"],
                 "name": name,
                 "datas_fname": name,
                 "datas": base64.encodestring(data[0]),
