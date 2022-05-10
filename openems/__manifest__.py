@@ -15,7 +15,6 @@
     "data": [
         "security/openems.xml",
         "security/ir.model.access.csv",
-        "security/energystorage.xml",
         "views/device.xml",
         "views/partner.xml",
         "views/setup_protocol.xml",
