@@ -11,7 +11,7 @@
     "website": "https://openems.io",
     "license": "AGPL-3",
     "category": "Specific Industry Applications",
-    "depends": ["base", "web", "mail", "crm", "resource", "web_m2x_options"],
+    "depends": ["base", "web", "mail", "crm", "resource", "stock", "web_m2x_options"],
     "data": [
         "security/openems.xml",
         "security/ir.model.access.csv",

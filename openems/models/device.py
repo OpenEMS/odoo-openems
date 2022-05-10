@@ -64,7 +64,7 @@ class Device(models.Model):
 
     # Verknüpfungen
     systemmessage_ids = fields.One2many(
-        "fems.systemmessage", "device_id", string="Systemmessages"
+        "openems.systemmessage", "device_id", string="Systemmessages"
     )
     user_role_ids = fields.One2many(
         "openems.device_user_role", "device_id", string="Roles", tracking=True
