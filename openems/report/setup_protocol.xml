@@ -1,7 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <report id="action_openems_setup_protocol_report" string="OpenEMS Edge Setup Protocol" model="fems.setup_protocol" report_type="qweb-pdf"
-        print_report_name = "('IBN-' + object.openems_device_id.name + '-' + object.create_date.strftime('%d.%m.%Y'))" name="openems.report_openems_setup_protocol_template" />
+    <report
+        id="action_openems_setup_protocol_report"
+        string="OpenEMS Edge Setup Protocol"
+        model="fems.setup_protocol"
+        report_type="qweb-pdf"
+        print_report_name="('IBN-' + object.openems_device_id.name + '-' + object.create_date.strftime('%d.%m.%Y'))"
+        name="openems.report_openems_setup_protocol_template"
+    />
 
     <template id="report_openems_setup_protocol_template">
         <t t-call="web.html_container">
@@ -9,14 +15,16 @@
                 <t t-call="web.basic_layout">
                     <div class="page">
                         <style type="text/css" scoped="true">
-                            table, th, td {
-                                border: 1px solid rgb(217, 217, 217);
-                            }
+table,
+th,
+td {
+    border: 1px solid rgb(217, 217, 217);
+}
 
-                            th {
-                                font-weight: bold;
-                                background-color: rgb(242, 242, 242);
-                            }
+th {
+    font-weight: bold;
+    background-color: rgb(242, 242, 242);
+}
                         </style>
 
                         <!-- Title -->
@@ -26,7 +34,10 @@
                             <tr>
                                 <td>Datum: </td>
                                 <td>
-                                    <span t-field="doc.create_date" t-options="{'widget': 'date'}" />
+                                    <span
+                                        t-field="doc.create_date"
+                                        t-options="{'widget': 'date'}"
+                                    />
                                 </td>
                             </tr>
                             <!-- Customer -->
@@ -36,50 +47,52 @@
                             <tr t-if="doc.customer_id.parent_id">
                                 <td>Firmenname</td>
                                 <td>
-                                    <span t-field="doc.customer_id.commercial_company_name"/>
+                                    <span
+                                        t-field="doc.customer_id.commercial_company_name"
+                                    />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Vor- Nachname</td>
                                 <td>
-                                    <span t-field="doc.customer_id.firstname"/>
-                                    <span t-field="doc.customer_id.lastname"/>
+                                    <span t-field="doc.customer_id.firstname" />
+                                    <span t-field="doc.customer_id.lastname" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Straße / Hausnummer</td>
                                 <td>
-                                    <span t-field="doc.customer_id.street"/>
+                                    <span t-field="doc.customer_id.street" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>PLZ</td>
                                 <td>
-                                    <span t-field="doc.customer_id.zip"/>
+                                    <span t-field="doc.customer_id.zip" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Ort</td>
                                 <td>
-                                    <span t-field="doc.customer_id.city"/>
+                                    <span t-field="doc.customer_id.city" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Land</td>
                                 <td>
-                                    <t t-esc="doc.customer_id.country_id.name"/>
+                                    <t t-esc="doc.customer_id.country_id.name" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>E-Mail-Adresse</td>
                                 <td>
-                                    <span t-field="doc.customer_id.email"/>
+                                    <span t-field="doc.customer_id.email" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Telefonnummer</td>
                                 <td>
-                                    <span t-field="doc.customer_id.phone"/>
+                                    <span t-field="doc.customer_id.phone" />
                                 </td>
                             </tr>
                             <!-- Different location -->
@@ -90,50 +103,66 @@
                                 <tr t-if="doc.different_location_id.parent_id">
                                     <td>Firmenname</td>
                                     <td>
-                                        <span t-field="doc.different_location_id.commercial_company_name"/>
+                                        <span
+                                            t-field="doc.different_location_id.commercial_company_name"
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Name Kontaktperson</td>
                                     <td>
-                                        <span t-field="doc.different_location_id.firstname"/>
-                                        <span t-field="doc.different_location_id.lastname"/>
+                                        <span
+                                            t-field="doc.different_location_id.firstname"
+                                        />
+                                        <span
+                                            t-field="doc.different_location_id.lastname"
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Straße / Hausnummer</td>
                                     <td>
-                                        <span t-field="doc.different_location_id.street"/>
+                                        <span
+                                            t-field="doc.different_location_id.street"
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>PLZ</td>
                                     <td>
-                                        <span t-field="doc.different_location_id.zip"/>
+                                        <span t-field="doc.different_location_id.zip" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Ort</td>
                                     <td>
-                                        <span t-field="doc.different_location_id.city"/>
+                                        <span
+                                            t-field="doc.different_location_id.city"
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Land</td>
                                     <td>
-                                        <t t-esc="doc.different_location_id.country_id.name"/>
+                                        <t
+                                            t-esc="doc.different_location_id.country_id.name"
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>E-Mail-Adresse</td>
                                     <td>
-                                        <span t-field="doc.different_location_id.email"/>
+                                        <span
+                                            t-field="doc.different_location_id.email"
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Telefonnummer</td>
                                     <td>
-                                        <span t-field="doc.different_location_id.phone"/>
+                                        <span
+                                            t-field="doc.different_location_id.phone"
+                                        />
                                     </td>
                                 </tr>
                             </t>
@@ -144,112 +173,124 @@
                             <tr>
                                 <td>Firmenname</td>
                                 <td>
-                                    <t t-esc="doc.installer_id.commercial_company_name"/>
+                                    <t
+                                        t-esc="doc.installer_id.commercial_company_name"
+                                    />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Name Installateur</td>
                                 <td>
-                                    <span t-field="doc.installer_id.firstname"/>
-                                    <span t-field="doc.installer_id.lastname"/>
+                                    <span t-field="doc.installer_id.firstname" />
+                                    <span t-field="doc.installer_id.lastname" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Straße / Hausnummer</td>
                                 <td>
-                                    <span t-field="doc.installer_id.street"/>
+                                    <span t-field="doc.installer_id.street" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>PLZ</td>
                                 <td>
-                                    <span t-field="doc.installer_id.zip"/>
+                                    <span t-field="doc.installer_id.zip" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Ort</td>
                                 <td>
-                                    <span t-field="doc.installer_id.city"/>
+                                    <span t-field="doc.installer_id.city" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Land</td>
                                 <td>
-                                    <span t-field="doc.installer_id.country_id.name"/>
+                                    <span t-field="doc.installer_id.country_id.name" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>E-Mail-Adresse</td>
                                 <td>
-                                    <span t-field="doc.installer_id.email"/>
+                                    <span t-field="doc.installer_id.email" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>Telefonnummer</td>
                                 <td>
-                                    <span t-field="doc.installer_id.phone"/>
+                                    <span t-field="doc.installer_id.phone" />
                                 </td>
                             </tr>
                             <!-- Setup protocol production lots -->
-                            <t t-set="lotCategory" t-value="null"/>
+                            <t t-set="lotCategory" t-value="null" />
                             <t t-foreach="doc.productionlot_ids" t-as="lot">
                                 <t t-if="lotCategory != lot.category">
-                                    <t t-set="lotCategory" t-value="lot.category"/>
+                                    <t t-set="lotCategory" t-value="lot.category" />
                                     <tr>
                                         <th colspan="2" class="pt-5">
-                                            <t t-raw="lotCategory"/>
+                                            <t t-raw="lotCategory" />
                                         </th>
                                     </tr>
                                 </t>
                                 <tr>
                                     <td>
-                                        <span t-field="lot.name"/>
+                                        <span t-field="lot.name" />
                                     </td>
                                     <td>
-                                        <span t-field="lot.lot_id.name"/>
+                                        <span t-field="lot.lot_id.name" />
                                     </td>
                                 </tr>
                             </t>
                             <!-- Not found production lots -->
-                            <t t-set="itemCategory" t-value="null"/>
+                            <t t-set="itemCategory" t-value="null" />
                             <t t-foreach="doc.item_ids" t-as="item">
-                                <t t-if="item.category == 'Seriennummern wurden im System nicht gefunden'">
+                                <t
+                                    t-if="item.category == 'Seriennummern wurden im System nicht gefunden'"
+                                >
                                     <t t-if="itemCategory != item.category">
-                                        <t t-set="itemCategory" t-value="item.category"/>
+                                        <t
+                                            t-set="itemCategory"
+                                            t-value="item.category"
+                                        />
                                         <tr>
                                             <th colspan="2" class="pt-5">
-                                                <t t-raw="itemCategory"/>
+                                                <t t-raw="itemCategory" />
                                             </th>
                                         </tr>
                                     </t>
                                     <tr>
                                         <td>
-                                            <span t-field="item.name"/>
+                                            <span t-field="item.name" />
                                         </td>
                                         <td>
-                                            <span t-field="item.value"/>
+                                            <span t-field="item.value" />
                                         </td>
                                     </tr>
                                 </t>
                             </t>
                             <!-- Setup protocol items -->
-                            <t t-set="itemCategory" t-value="null"/>
+                            <t t-set="itemCategory" t-value="null" />
                             <t t-foreach="doc.item_ids" t-as="item">
-                                <t t-if="item.category != 'Seriennummern wurden im System nicht gefunden'">
+                                <t
+                                    t-if="item.category != 'Seriennummern wurden im System nicht gefunden'"
+                                >
                                     <t t-if="itemCategory != item.category">
-                                        <t t-set="itemCategory" t-value="item.category"/>
+                                        <t
+                                            t-set="itemCategory"
+                                            t-value="item.category"
+                                        />
                                         <tr>
                                             <th colspan="2" class="pt-5">
-                                                <t t-raw="itemCategory"/>
+                                                <t t-raw="itemCategory" />
                                             </th>
                                         </tr>
                                     </t>
                                     <tr>
                                         <td>
-                                            <span t-field="item.name"/>
+                                            <span t-field="item.name" />
                                         </td>
                                         <td>
-                                            <span t-field="item.value"/>
+                                            <span t-field="item.value" />
                                         </td>
                                     </tr>
                                 </t>
@@ -257,7 +298,10 @@
                         </table>
                     </div>
 
-                    <div class="footer o_background_footer" style="line-height: 14px; font-size: 12px">
+                    <div
+                        class="footer o_background_footer"
+                        style="line-height: 14px; font-size: 12px"
+                    >
                         <div style="margin-bottom: 2mm">
                             OpenEMS Association e.V.
                         </div>
