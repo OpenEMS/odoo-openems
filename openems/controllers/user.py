@@ -1,10 +1,9 @@
 from odoo import http
 from odoo.http import request
 
-
 class User(http.Controller):
     @http.route("/openems_backend/sendRegistrationEmail", type="json", auth="user")
-    def index(self, userId, password=None):
+    def index(self, userId, password=None, oem: str = ''):
         user_model = request.env["res.users"]
         user_record = user_model.search_read([("id", "=", userId)], ["partner_id"])
         if len(user_record) != 1:
@@ -15,31 +14,19 @@ class User(http.Controller):
         if partner_id is None:
             raise ValueError("User has no partner")
 
-        partner_model = request.env["res.partner"]
-        partner_record = partner_model.search_read(
-            [("id", "=", partner_id[0])], ["firstname", "lastname", "email"]
-        )
-
-        email = partner_record[0].get("email")
-
         if password is None:
             password = "*****"
-
-        body = """
-            <p>Your account for OpenEMS Backend has been created.</p>
-            <p>
-                E-Mail: {email}<br>
-                Passwort: {password}<br>
-            </p>
-        """.format(
-            email=email, password=password
-        )
-
-        email_values = {"body_html": body}
-
-        templateRegistration = request.env.ref("openems.registration_email")
-        templateRegistration.send_mail(
-            res_id=id, email_values=email_values, force_send=True
-        )
-
+        # load template
+        template = self.getTemplate(oem)
+        # set mail values
+        email_values = {
+            'password': password
+        }
+        # send mail
+        template.with_context(email_values).send_mail(
+            res_id=partner_id[0], force_send=True)
         return {}
+
+    def getTemplate(self, oem: str):
+        template = request.env.ref("openems.registration_email")
+        return template

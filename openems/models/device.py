@@ -6,7 +6,11 @@ class Device(models.Model):
     _description = "OpenEMS Edge Device"
     _inherit = "mail.thread"
     _order = "name_number asc"
-    _sql_constraints = [("unique_name", "unique(name)", "Name needs to be unique")]
+    _sql_constraints = [
+        ("unique_name", "unique(name)", "Name needs to be unique"),
+        ("unique_stock_production_lot_id", "unique(stock_production_lot_id)",
+         "Serial number needs to be unique")
+    ]
 
     name = fields.Char(required=True)
     active = fields.Boolean("Active", default=True, tracking=True)
@@ -16,6 +20,23 @@ class Device(models.Model):
     monitoring_url = fields.Char(
         "Online-Monitoring", compute="_compute_monitoring_url", store=False
     )
+    stock_production_lot_id = fields.Many2one("stock.production.lot")
+    first_setup_protocol_date = fields.Datetime(
+        "First Setup Protocol Date", compute="_compute_first_setup_protocol"
+    )
+    manual_setup_date = fields.Datetime("Manual Setup Date")
+
+    @api.depends("setup_protocol_ids", "manual_setup_date")
+    def _compute_first_setup_protocol(self):
+        for rec in self:
+            if rec.manual_setup_date:
+                rec.first_setup_protocol_date = rec.manual_setup_date
+            elif len(rec.setup_protocol_ids) > 0:
+                rec.first_setup_protocol_date = rec.setup_protocol_ids[
+                    (len(rec.setup_protocol_ids) - 1)
+                ]["create_date"]
+            else:
+                rec.first_setup_protocol_date = None
 
     @api.depends("name")
     def _compute_monitoring_url(self):
@@ -47,7 +68,10 @@ class Device(models.Model):
     openems_version = fields.Char("OpenEMS Version", tracking=True)
 
     # Security
-    setup_password = fields.Char("Setup Password", help="Password for installer")
+    setup_password = fields.Char(
+        "Installateursschlüssel (Installation key)",
+        help="Passwort für die Inbetriebnahme durch den Installateur",
+    )
     apikey = fields.Char("API-Key", required=True, tracking=True)
 
     # 'openems_sum_state_level' is updated by OpenEMS Backend
@@ -123,7 +147,7 @@ class DeviceUserRole(models.Model):
         default="guest",
         required=True,
     )
-    time_to_wait = fields.Integer(string="Notification", default=0)
+    time_to_wait = fields.Integer(string="Notification", default=1440)
     last_notification = fields.Datetime(string="Last notification sent")
 
 

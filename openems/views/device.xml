@@ -114,11 +114,16 @@
                                     readonly="True"
                                     nolabel="True"
                                 />
+                                <field name="first_setup_protocol_date" />
+                                <field name="manual_setup_date"/>
                             </group>
                             <group string="Hardware">
                                 <field name="producttype" />
                                 <field name="emshardware" />
                                 <field name="oem" />
+                            </group>
+                            <group string="Produkt">
+                                <field name="stock_production_lot_id"/>
                             </group>
                         </page>
                         <page string="Sicherheit">

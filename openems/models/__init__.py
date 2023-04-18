@@ -1,1 +1,1 @@
-from . import device, partner, setup_protocol, user
+from . import device, partner, setup_protocol, user, stock_production_lot

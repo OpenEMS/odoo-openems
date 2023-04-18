@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <report
-        id="openems.action_openems_setup_protocol_report"
-        string="OpenEMS Edge Setup Protocol"
-        model="openems.setup_protocol"
-        report_type="qweb-pdf"
-        print_report_name="('IBN-' + object.openems_device_id.name + '-' + object.create_date.strftime('%d.%m.%Y'))"
-        name="openems.report_openems_setup_protocol_template"
-    />
-
+    <record id="openems.action_openems_setup_protocol_report"  model="ir.actions.report">
+        <field name="name">OpenEMS Setup Protocol</field>
+        <field name="model">openems.setup_protocol</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">openems.report_openems_setup_protocol_template</field>
+        <field name="print_report_name">('IBN-' + object.openems_device_id.name + '-' + object.create_date.strftime('%d.%m.%Y'))</field>
+    </record>
     <template id="report_openems_setup_protocol_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
@@ -310,5 +308,4 @@ th {
             </t>
         </t>
     </template>
-
 </odoo>

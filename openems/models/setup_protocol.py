@@ -44,3 +44,6 @@ class SetupProtocolItem(models.Model):
     setup_protocol_id = fields.Many2one(
         "openems.setup_protocol", "Setup Protocol", ondelete="cascade"
     )
+    view = fields.Char("View Identifier")
+    field = fields.Char("Field Identifier")
+

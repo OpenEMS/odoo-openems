@@ -1,30 +1,53 @@
 import logging
-from datetime import datetime
+from datetime import  datetime
 
 from odoo import http
 from odoo.http import request
 
-_logger = logging.getLogger("Alerting")
+class Message:
+    sentAt: datetime
+    edgeId: str
+    userIds: list[int]
 
+    def __init__(self, sentAt: datetime, edgeId: str, userIds: list[int]) -> None:
+        self.sentAt = sentAt
+        self.edgeId = edgeId
+        self.userIds = userIds
 
-class AlertingOwner(http.Controller):
+class Alerting(http.Controller):
+    __logger = logging.getLogger("Alerting")
+
     @http.route("/openems_backend/send_alerting_email", type="json", auth="user")
-    def index(self, ids, now):
-        ids = request.params["ids"]
-        _logger.debug("queue notification mails to " + str(len(ids)) + " users")
+    def old(self, ids: list, now: str, edgeId: str = ''):
+        params = [{"edgeId":edgeId, "recipients":ids}]
+        self.index(now, params)
 
-        now_string = request.params["now"]
-        now = datetime.strptime(now_string, "%Y-%m-%d %H:%M:%S.%f")
+    @http.route("/openems_backend/mail/alerting_email", type="json", auth="user")
+    def index(self, sentAt: str, params: list[dict]):
+        msgs = self.__get_params(sentAt, params)
 
-        notify_role = http.request.env["openems.device_user_role"]
-        template = request.env.ref("openems.alerting_email_notify")
-
-        force_send = len(ids) <= 10
-
-        for res_id in ids:
-            exists = notify_role.browse(res_id)
-            if exists:
-                template.send_mail(res_id=res_id, force_send=force_send)
-                exists.write({"last_notification": now})
+        for msg in msgs:
+            template = self.__get_template(msg.edgeId)
+            self.__send_mails(template, msg)
 
         return {}
+
+    def __get_params(self, sentAt, params) -> list[Message]:
+        msgs = list()
+        sent = datetime.strptime(sentAt, "%Y-%m-%d %H:%M:%S")
+        for param in params:
+            msgs.append(Message(sent, param["edgeId"], param["recipients"]));
+        return msgs
+
+    def __get_template(self, device_id):
+        template = request.env.ref("openems.alerting_email_generic")
+        return template
+
+    def __send_mails(self, template, msg: Message):
+        roles = http.request.env["openems.device_user_role"].search([("id","in",msg.userIds),("device_id","=",msg.edgeId)])
+        for role in roles:
+            try:
+                template.send_mail(res_id=role.id, force_send=True)
+                role.write({"last_notification": msg.sentAt})
+            except Exception as err:
+                self.__logger.error("[" + str(err) + "] Unable to send template[" + str(template.name) +"] to edgeUser[user=" + str(role.id) + ", edge=" + str(msg.edgeId)+ "]")

@@ -7,6 +7,12 @@
             <form>
                 <sheet>
                     <group>
+                        <button
+                            name="%(action_openems_setup_protocol_report)d"
+                            string="Print"
+                            type="action"
+                            icon="fa-print"
+                        />
                     </group>
                     <group>
                         <field name="create_date" />
@@ -44,6 +50,8 @@
                 <field name="category" />
                 <field name="name" />
                 <field name="value" />
+                <field name="view" />
+                <field name="field" />
             </tree>
         </field>
     </record>
