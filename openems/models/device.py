@@ -42,7 +42,7 @@ class Device(models.Model):
     def _compute_monitoring_url(self):
         for rec in self:
             url = (
-                self.env["ir.config_parameter"].sudo().get_param("edge.monitoring.url")
+                self.env["ir.config_parameter"].sudo().get_param("openems.edge_monitoring_url")
             )
             rec.monitoring_url = url + rec.name
 
