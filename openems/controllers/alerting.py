@@ -17,13 +17,22 @@ class Message:
 class Alerting(http.Controller):
     __logger = logging.getLogger("Alerting")
 
-    @http.route("/openems_backend/send_alerting_email", type="json", auth="user")
-    def old(self, ids: list, now: str, edgeId: str = ''):
-        params = [{"edgeId":edgeId, "recipients":ids}]
-        self.index(now, params)
+    @http.route("/openems_backend/alerting_sumState_email", type="json", auth="user")
+    def sum_state_alerting(self, ids: list, now: str, edgeId: str = ''):
+        template = request.env.ref('openems.sum_state_alerting_email')
+        edgeIds = [param['edgeId'] for param in params]
+        edges = http.request.env['fems.device'].search([('name','in', edgeIds)])
+        
+        for edge in edges:
+            try:
+                template.send_mail(res_id=edge.id, force_send=True)
+            except Exception as err:
+                self.__logger.error('[' + str(err) + '] Unable to send template[' + str(template.name) +'] for edge[id=' + str(edge.id) + ']')
+                
+        return {}
 
-    @http.route("/openems_backend/mail/alerting_email", type="json", auth="user")
-    def index(self, sentAt: str, params: list[dict]):
+    @http.route("/openems_backend/mail/alerting_offline_email", type="json", auth="user")
+    def offline_alerting(self, sentAt: str, params: list[dict]):
         msgs = self.__get_params(sentAt, params)
 
         for msg in msgs:
@@ -40,11 +49,14 @@ class Alerting(http.Controller):
         return msgs
 
     def __get_template(self, device_id):
-        template = request.env.ref("openems.alerting_email_generic")
+        template = request.env.ref("openems.alerting_offline")
         return template
 
     def __send_mails(self, template, msg: Message):
-        roles = http.request.env["openems.device_user_role"].search([("id","in",msg.userIds),("device_id","=",msg.edgeId)])
+        roles = http.request.env['openems.device_user_role'].search(
+            [('id','in',msg.userIds),('device_id','=',msg.edgeId),('user_id.partner_id.email','!=',False)]
+        )
+        
         for role in roles:
             try:
                 template.send_mail(res_id=role.id, force_send=True)

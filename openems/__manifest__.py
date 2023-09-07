@@ -24,7 +24,7 @@
         "views/setup_protocol.xml",
         "views/user.xml",
         "views/stock_production_lot_views.xml",
-        "mail/openems/alerting_generic.xml",
+        "mail/openems/alerting_offline.xml",
         "mail/openems/setup_protocol_customer.xml",
         "mail/openems/setup_protocol_installer.xml",
         "mail/openems/user_registration.xml",

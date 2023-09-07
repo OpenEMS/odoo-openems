@@ -18,6 +18,9 @@ class ResUsers(models.Model):
     device_role_ids = fields.One2many(
         "openems.device_user_role", "user_id", string="Roles"
     )
+    alerting_settings = fields.One2many(
+        "openems.alerting", "user_id", string="Alerting"
+    )
     openems_language = fields.Selection(
         [
             ("EN", "English"),
