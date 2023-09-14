@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data>
-        <record id="alerting_offline" model="mail.template">
-            <field name="name">E-Mail Alerting</field>
+        <record id="alerting_sum_state" model="mail.template">
+            <field name="name">E-Mail SumState Alerting</field>
             <field name="model_id" ref="model_openems_alerting" />
             <field name="email_from"><![CDATA[OpenEMS Association e.V.<noreply@openems.io>]]></field>
             <field name="partner_to">{{object.user_id.partner_id.id}}</field>
-            <field name="subject">OpenEMS Alert - Edge is offline</field>
+            <field name="subject">OpenEMS Alert - Edge is in {{object.device_id.openems_sum_state_level}} State</field>
             <field name="auto_delete">false</field>
             <field name="attachment_ids" eval="[ref('attachment_logo_openems')]"/>
             <field name="body_html"><![CDATA[
@@ -142,7 +142,19 @@
                             </tr>
                             <tr>
                               <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                                <div style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">Your OpenEMS Edge with number <strong t-out="object.device_id.name"></strong> is offline since:</div>
+                                <div style="font-family:helvetica;font-size:16px;line-height:1;text-align:left;color:#000000;">
+                                  Your OpenEMS Edge with number <strong t-out="object.device_id.name"></strong> is in 
+                                  <t t-if="object.device_id.openems_sum_state_level.upper() == FAULT">
+                                    <strong style="color: red" t-out="object.device_id.openems_sum_state_level"></strong>
+                                  </t>
+                                  <t t-elif="object.device_id.openems_sum_state_level.upper() == WARNING">
+                                    <strong style="color: yellow" t-out="object.device_id.openems_sum_state_level"></strong>
+                                  </t>
+                                  <t t-else="">
+                                    <strong t-out="object.device_id.openems_sum_state_level"></strong>
+                                  </t>
+                                  since:
+                                </div>
                               </td>
                             </tr>
                             <tr>

@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-
+from datetime import datetime
 
 class Device(models.Model):
     _name = "openems.device"
@@ -202,12 +202,25 @@ class Alerting(models.Model):
     device_name = fields.Text(compute="_compute_device_name", store="True")
     user_login = fields.Text(compute="_compute_user_login", store="True")
     
+    user_role = fields.Selection(
+        [("admin", "Admin"), ("installer", "Installer"), ("owner", "Owner"), ("guest", "Guest"),],
+        compute="_compute_user_role", store="False")
+    
     @api.depends("device_id")
     def _compute_device_name(self):
-        for rec in self: #device = self.env['openems.device'].browse(self.device_ids[0].id)
+        for rec in self:
             rec.device_name = rec.device_id.name;
             
     @api.depends("user_id")
     def _compute_user_login(self):
-        for rec in self: #device = self.env['openems.device'].browse(self.device_ids[0].id)
+        for rec in self:
             rec.user_login = rec.user_id.login;
+            
+    @api.depends("user_id")
+    def _compute_user_role(self):
+        for rec in self: 
+            user_role: DeviceUserRole = rec.user_id.device_role_ids.search([('device_id','=',rec.device_id.id)])
+            if user_role:
+                return user_role.role
+            else:
+                return rec.user_id.global_role

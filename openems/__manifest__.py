@@ -11,7 +11,7 @@
     "website": "https://openems.io",
     "license": "AGPL-3",
     "category": "Specific Industry Applications",
-    "depends": ["base", "web", "mail", "crm", "resource", "stock", "web_m2x_options"],
+    "depends": ["base", "web", "mail", "crm", "resource", "stock", "web_m2x_options", "partner_firstname"],
     "data": [
         "data/ir_config_parameter.xml",
         "data/res_partner_category.xml",
@@ -25,6 +25,7 @@
         "views/user.xml",
         "views/stock_production_lot_views.xml",
         "mail/openems/alerting_offline.xml",
+        "mail/openems/alerting_sum_state.xml",
         "mail/openems/setup_protocol_customer.xml",
         "mail/openems/setup_protocol_installer.xml",
         "mail/openems/user_registration.xml",
