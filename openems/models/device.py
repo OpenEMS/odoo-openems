@@ -44,7 +44,7 @@ class Device(models.Model):
             url = (
                 self.env["ir.config_parameter"].sudo().get_param("openems.edge_monitoring_url")
             )
-            rec.monitoring_url = url + rec.name
+            rec.monitoring_url = (url + rec.name) if rec.name else ""
 
     producttype = fields.Selection(
         [
