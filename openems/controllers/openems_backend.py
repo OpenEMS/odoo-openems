@@ -38,6 +38,7 @@ class OpenemsBackend(http.Controller):
                     "name": user_rec["name"],
                     "global_role": global_role,
                     "language": user_rec["openems_language"],
+                    "has_multiple_edges": True
                 },
                 "devices": [],
             }
@@ -52,8 +53,9 @@ class OpenemsBackend(http.Controller):
         device_model = http.request.env["openems.device"]
         devices = device_model.search_read(
             [], ["id", "name", "user_role_ids", "comment", "producttype",
-                 "lastmessage", "first_setup_protocol_date"]
+                 "lastmessage", "first_setup_protocol_date", "openems_sum_state_level"]
         )
+
         devs = []
         for device_rec in devices:
             # Set user role per group
@@ -79,6 +81,7 @@ class OpenemsBackend(http.Controller):
                 "producttype": device_rec["producttype"],
                 "role": role,
                 "lastmessage": device_rec["lastmessage"],
+                "openems_sum_state_level": device_rec["openems_sum_state_level"]
             }
 
             if device_rec["first_setup_protocol_date"]:
@@ -95,6 +98,7 @@ class OpenemsBackend(http.Controller):
                 "name": user_rec["name"],
                 "global_role": global_role,
                 "language": user_rec["openems_language"],
+                "has_multiple_edges": len(devs) > 1
             },
             "devices": devs,
         }
@@ -122,7 +126,7 @@ class OpenemsBackend(http.Controller):
         device_model = http.request.env["openems.device"]
         devices = device_model.search_read(
             [("name", "=", edge_id)],
-            ["id", "name", "comment", "producttype", "lastmessage", "first_setup_protocol_date"])
+            ["id", "name", "comment", "producttype", "lastmessage", "first_setup_protocol_date", "openems_sum_state_level"])
 
         if len(devices) != 1:
             return {}
@@ -132,7 +136,8 @@ class OpenemsBackend(http.Controller):
         # Get specific Device roles
         device_user_role_model = http.request.env["openems.device_user_role"]
         device_user_roles = device_user_role_model.search_read(
-            [("user_id", "=", user_id), ("device_id", "=", device["id"])], ["id", "role"]
+            [("user_id", "=", user_id),
+             ("device_id", "=", device["id"])], ["id", "role"]
         )
 
         # Set user role per group
@@ -155,6 +160,7 @@ class OpenemsBackend(http.Controller):
             "producttype": device["producttype"],
             "role": role,
             "lastmessage": device["lastmessage"],
+            "openems_sum_state_level": device["openems_sum_state_level"]
         }
         if device["first_setup_protocol_date"]:
             dev["first_setup_protocol_date"] = device["first_setup_protocol_date"]
@@ -162,7 +168,7 @@ class OpenemsBackend(http.Controller):
         return dev
 
     @http.route("/openems_backend/get_edges", auth="user", type="json")
-    def get_edges(self, limit, page, query=None):
+    def get_edges(self, limit, page, query=None, searchParams=None):
         # Get user
         user_id = http.request.env.context.get("uid")
         res_users = http.request.env["res.users"].sudo()
@@ -187,20 +193,47 @@ class OpenemsBackend(http.Controller):
             [("user_id", "=", user_id)], ["id", "role"]
         )
 
-        domain = []
+        domains = []
+        logical_operators = []
+        additional_domains = []
         if query:
-            domain = ["|", "|",
-                      ("name", "ilike", query),
-                      ("comment", "ilike", query),
-                      ("producttype", "ilike", query)
-                      ]
+            logical_operators.extend(['|', '|'])
+            domains = [
+                ("name", "ilike", query),
+                ("comment", "ilike", query),
+                ("producttype", "ilike", query)]
+
+        if searchParams:
+            if searchParams.get("producttype"):
+                additional_domains.append(
+                    ("producttype", "in", searchParams.get("producttype")))
+
+            if searchParams.get("sumState"):
+                sum_states = list(map(lambda s: s.lower(), searchParams.get("sumState")))
+                additional_domains.append(
+                    ("openems_sum_state_level", "in", sum_states))
+
+            if "isOnline" in searchParams:
+                additional_domains.append(
+                    ("openems_is_connected", "=", searchParams.get("isOnline")))
+
+            if len(additional_domains) > 1:
+                for _ in range(len(additional_domains) - 1):
+                    logical_operators.insert(0, '&')
+
+        # insert 'and' if both are not 'None'
+        if query and searchParams:
+            logical_operators.insert(0, '&')
+
+        domains.extend(additional_domains)
+        logical_operators.extend(domains)
 
         # Get Devices
         device_model = http.request.env["openems.device"]
         devices = device_model.search_read(
-            domain,
+            logical_operators,
             ["id", "name", "user_role_ids", "comment", "producttype",
-                "lastmessage", "first_setup_protocol_date"],
+                "lastmessage", "first_setup_protocol_date", "openems_sum_state_level"],
             limit=limit, offset=(page * limit)
         )
         devs = []
@@ -228,6 +261,7 @@ class OpenemsBackend(http.Controller):
                 "producttype": device_rec["producttype"],
                 "role": role,
                 "lastmessage": device_rec["lastmessage"],
+                "openems_sum_state_level": device_rec["openems_sum_state_level"]
             }
 
             if device_rec["first_setup_protocol_date"]:
