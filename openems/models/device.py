@@ -20,7 +20,7 @@ class Device(models.Model):
     monitoring_url = fields.Char(
         "Online-Monitoring", compute="_compute_monitoring_url", store=False
     )
-    stock_production_lot_id = fields.Many2one("stock.production.lot")
+    stock_production_lot_id = fields.Many2one("stock.lot")
     first_setup_protocol_date = fields.Datetime(
         "First Setup Protocol Date", compute="_compute_first_setup_protocol"
     )
