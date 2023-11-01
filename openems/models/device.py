@@ -41,9 +41,7 @@ class Device(models.Model):
     @api.depends("name")
     def _compute_monitoring_url(self):
         for rec in self:
-            url = (
-                self.env["ir.config_parameter"].sudo().get_param("openems.edge_monitoring_url")
-            )
+            url = self.env["ir.config_parameter"].sudo().get_param("openems.edge_monitoring_url", default='#')
             rec.monitoring_url = url + rec.name
 
     producttype = fields.Selection(
