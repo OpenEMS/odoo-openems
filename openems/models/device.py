@@ -20,7 +20,7 @@ class Device(models.Model):
     monitoring_url = fields.Char(
         "Online-Monitoring", compute="_compute_monitoring_url", store=False
     )
-    stock_production_lot_id = fields.Many2one("stock.production.lot")
+    stock_production_lot_id = fields.Many2one("stock.lot")
     first_setup_protocol_date = fields.Datetime(
         "First Setup Protocol Date", compute="_compute_first_setup_protocol"
     )
@@ -41,10 +41,8 @@ class Device(models.Model):
     @api.depends("name")
     def _compute_monitoring_url(self):
         for rec in self:
-            url = (
-                self.env["ir.config_parameter"].sudo().get_param("openems.edge_monitoring_url")
-            )
-            rec.monitoring_url = url + rec.name if url and rec.name else ""
+            url = self.env["ir.config_parameter"].sudo().get_param("openems.edge_monitoring_url", default='#')
+            rec.monitoring_url = url + rec.name
 
     producttype = fields.Selection(
         [
@@ -177,7 +175,7 @@ class Systemmessage(models.Model):
         for rec in self:
             # get up to 100 characters from first line
             rec.text_teaser = rec.text.splitlines()[0][0:100] if rec.text else False
-            
+
 class Alerting(models.Model):
     _name = "openems.alerting"
     _description = "OpenEMS Edge AlertingSettings"
@@ -191,34 +189,34 @@ class Alerting(models.Model):
 
     device_id = fields.Many2one("openems.device", string="OpenEMS Edge")
     user_id = fields.Many2one("res.users", string="User")
-    
+
     offline_delay = fields.Integer(string="Offline Notification", default=1440)
     warning_delay = fields.Integer(string="Warning Notification", default=1440)
     fault_delay = fields.Integer(string="Fault Notification", default=1440)
-    
+
     offline_last_notification = fields.Datetime(string="Last Offline notification sent")
     sum_state_last_notification = fields.Datetime(string="Last SumState notification sent")
-    
+
     device_name = fields.Text(compute="_compute_device_name", store="True")
     user_login = fields.Text(compute="_compute_user_login", store="True")
-    
+
     user_role = fields.Selection(
         [("admin", "Admin"), ("installer", "Installer"), ("owner", "Owner"), ("guest", "Guest"),],
         compute="_compute_user_role", store="False")
-    
+
     @api.depends("device_id")
     def _compute_device_name(self):
         for rec in self:
             rec.device_name = rec.device_id.name;
-            
+
     @api.depends("user_id")
     def _compute_user_login(self):
         for rec in self:
             rec.user_login = rec.user_id.login;
-            
+
     @api.depends("user_id")
     def _compute_user_role(self):
-        for rec in self: 
+        for rec in self:
             user_role: DeviceUserRole = rec.user_id.device_role_ids.search([('device_id','=',rec.device_id.id)])
             if user_role:
                 return user_role.role

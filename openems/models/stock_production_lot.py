@@ -2,7 +2,7 @@ from odoo import fields, models, api
 
 
 class ProductionLot(models.Model):
-    _inherit = "stock.production.lot"
+    _inherit = "stock.lot"
 
     device_id = fields.Many2one(
         'openems.device', compute='compute_device_id', inverse='device_inverse')
