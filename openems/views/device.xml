@@ -298,7 +298,7 @@
         sequence="100"
         id="menu_openems"
         name="OpenEMS"
-        web_icon="openems,static/description/openems-icon.png"
+        web_icon="openems,static/description/icon.png"
     />
     <menuitem id="menu_openems_content" parent="menu_openems" name="OpenEMS Edge" />
     <menuitem
