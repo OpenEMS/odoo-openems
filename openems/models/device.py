@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, exceptions
 from datetime import datetime
 
 class Device(models.Model):
@@ -118,6 +118,15 @@ class Device(models.Model):
         elif string == "fault":
             state = 3
         return state
+
+    # Custom Constraints
+    def write(self, vals):
+        """Profibit to change name field after creation."""
+        if 'name' in vals:
+            for record in self:
+                if record.id and record.name != vals['name']:
+                    raise exceptions.UserError("The name of the device cannot be changed after creation.")
+        return super(Device, self).write(vals)
 
 
 class DeviceTag(models.Model):

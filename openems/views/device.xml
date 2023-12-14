@@ -80,7 +80,7 @@
                         <h1>
                             <field name="comment" nolabel="True" />
                         </h1>
-                        <field name="name" readonly="1" />
+                        <field name="name" />
                         <field name="monitoring_url" widget="url" />
                     </group>
                     <notebook>
