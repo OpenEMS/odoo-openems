@@ -15,7 +15,6 @@
     "data": [
         "data/ir_config_parameter.xml",
         "data/res_partner_category.xml",
-        "data/ir_attachment_logos.xml",
         "security/openems.xml",
         "security/ir.model.access.csv",
         "report/setup_protocol.xml",
