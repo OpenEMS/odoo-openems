@@ -135,7 +135,6 @@
                                     <tree editable="bottom">
                                         <field name="user_id" />
                                         <field name="role" />
-                                        <field name="time_to_wait" />
                                     </tree>
                                 </field>
                             </group>
@@ -177,6 +176,21 @@
                         </page>
                         <page string="Systemmessages">
                             <field name="systemmessage_ids" readonly="True" />
+                        </page>
+                        <page string="Alerting">
+                            <group>
+                                <field
+                                    name="alerting_settings"
+                                    string="Alerting Settings"
+                                >
+                                    <tree editable="bottom">
+                                        <field name="user_id" />
+                                        <field name="offline_delay" />
+                                        <field name="warning_delay" />
+                                        <field name="fault_delay" />
+                                    </tree>
+                                </field>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -284,7 +298,7 @@
         sequence="100"
         id="menu_openems"
         name="OpenEMS"
-        web_icon="openems,static/description/openems-icon.png"
+        web_icon="openems,static/description/icon.png"
     />
     <menuitem id="menu_openems_content" parent="menu_openems" name="OpenEMS Edge" />
     <menuitem

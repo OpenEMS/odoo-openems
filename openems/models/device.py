@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-
+from datetime import datetime
 
 class Device(models.Model):
     _name = "openems.device"
@@ -91,6 +91,9 @@ class Device(models.Model):
     user_role_ids = fields.One2many(
         "openems.device_user_role", "device_id", string="Roles", tracking=True
     )
+    alerting_settings = fields.One2many(
+        "openems.alerting", "device_id", string="Alerting", tracking=True
+    )
     openems_config_update_ids = fields.One2many(
         "openems.openemsconfigupdate", "device_id", string="OpenEMS Config Updates"
     )
@@ -145,8 +148,6 @@ class DeviceUserRole(models.Model):
         default="guest",
         required=True,
     )
-    time_to_wait = fields.Integer(string="Notification", default=1440)
-    last_notification = fields.Datetime(string="Last notification sent")
 
 
 class OpenemsConfigUpdate(models.Model):
@@ -174,3 +175,50 @@ class Systemmessage(models.Model):
         for rec in self:
             # get up to 100 characters from first line
             rec.text_teaser = rec.text.splitlines()[0][0:100] if rec.text else False
+
+class Alerting(models.Model):
+    _name = "openems.alerting"
+    _description = "OpenEMS Edge AlertingSettings"
+    _sql_constraints = [
+        (
+            "device_user_uniq",
+            "unique(device_id, user_id)",
+            "User already has Alerting Settings.",
+        ),
+    ]
+
+    device_id = fields.Many2one("openems.device", string="OpenEMS Edge")
+    user_id = fields.Many2one("res.users", string="User")
+
+    offline_delay = fields.Integer(string="Offline Notification", default=1440)
+    warning_delay = fields.Integer(string="Warning Notification", default=1440)
+    fault_delay = fields.Integer(string="Fault Notification", default=1440)
+
+    offline_last_notification = fields.Datetime(string="Last Offline notification sent")
+    sum_state_last_notification = fields.Datetime(string="Last SumState notification sent")
+
+    device_name = fields.Text(compute="_compute_device_name", store="True")
+    user_login = fields.Text(compute="_compute_user_login", store="True")
+
+    user_role = fields.Selection(
+        [("admin", "Admin"), ("installer", "Installer"), ("owner", "Owner"), ("guest", "Guest"),],
+        compute="_compute_user_role", store="False")
+
+    @api.depends("device_id")
+    def _compute_device_name(self):
+        for rec in self:
+            rec.device_name = rec.device_id.name;
+
+    @api.depends("user_id")
+    def _compute_user_login(self):
+        for rec in self:
+            rec.user_login = rec.user_id.login;
+
+    @api.depends("user_id", "device_id")
+    def _compute_user_role(self):
+        for rec in self:
+            user_role: DeviceUserRole = rec.user_id.device_role_ids.search([('device_id','=',rec.device_id.id)])
+            if user_role:
+                return user_role.role
+            else:
+                return rec.user_id.global_role
