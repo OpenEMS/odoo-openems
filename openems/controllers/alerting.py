@@ -37,9 +37,8 @@ class Alerting(http.Controller):
         if len(msgs) == 0:
             self.__logger.error("Scheduled SumState-Alerting-Mail without any recipients!!!")
         
+        template = request.env.ref('openems.alerting_sum_state')
         for msg in msgs:
-            template = request.env.ref('openems.alerting_sum_state')
-            #template = self.__get_template(msg.edgeId)
             self.__send_mails(template, msg, update_func)
                   
         return {}
@@ -49,8 +48,8 @@ class Alerting(http.Controller):
         msgs = self.__get_offline_params(sentAt, params)
         update_func = lambda role, at: { role.write({"offline_last_notification": at})}
 
+        template = request.env.ref("openems.alerting_offline")
         for msg in msgs:
-            template = self.__get_template(msg.edgeId)
             self.__send_mails(template, msg, update_func)
 
         return {}
@@ -74,10 +73,6 @@ class Alerting(http.Controller):
             msgs.append(SumStateMessage(sent, edgeId, recipients, state));
         return msgs
 
-    def __get_template(self, device_id):
-        template = request.env.ref("openems.alerting_offline")
-        return template
-
     def __send_mails(self, template, msg: Message, update_func):
         roles = http.request.env['openems.alerting'].search(
             [('user_id','in',msg.userIds),('device_id','=',msg.edgeId)]
@@ -87,6 +82,5 @@ class Alerting(http.Controller):
             try:
                 template.send_mail(res_id=role.id, force_send=True)
                 update_func(role, msg.sentAt)
-                #role.write({"offline_last_notification": msg.sentAt})
             except Exception as err:
                 self.__logger.error("[" + str(err) + "] Unable to send template[" + str(template.name) +"] to edgeUser[user=" + str(role.id) + ", edge=" + str(msg.edgeId)+ "]")

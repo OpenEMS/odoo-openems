@@ -144,7 +144,7 @@
                                     </strong>
                                   </t>
                                   <t t-else>
-                                    <stong>UNKNOWN </stong>
+                                    <strong>UNKNOWN</strong>
                                   </t> state!
                                 </div>
                               </td>

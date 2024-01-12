@@ -214,7 +214,7 @@ class Alerting(models.Model):
         for rec in self:
             rec.user_login = rec.user_id.login;
 
-    @api.depends("user_id")
+    @api.depends("user_id", "device_id")
     def _compute_user_role(self):
         for rec in self:
             user_role: DeviceUserRole = rec.user_id.device_role_ids.search([('device_id','=',rec.device_id.id)])
