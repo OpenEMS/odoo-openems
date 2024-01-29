@@ -119,6 +119,18 @@ class Device(models.Model):
             state = 3
         return state
 
+    @api.model
+    def create(self, vals):
+        # Generate API key if not provided
+        if 'apikey' not in vals or not vals['apikey']:
+            vals['apikey'] = self._generate_api_key()
+
+        return super(Device, self).create(vals)
+
+    def _generate_api_key(self):
+        # Generate a random API key in the format you specified
+        return ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+
 
 class DeviceTag(models.Model):
     _name = "openems.device_tag"
