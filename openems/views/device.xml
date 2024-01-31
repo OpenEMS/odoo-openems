@@ -135,6 +135,7 @@
                                     <tree editable="bottom">
                                         <field name="user_id" />
                                         <field name="role" />
+                                        <field name="time_to_wait" />
                                     </tree>
                                 </field>
                             </group>
