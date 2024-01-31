@@ -148,6 +148,8 @@ class DeviceUserRole(models.Model):
         default="guest",
         required=True,
     )
+    time_to_wait = fields.Integer("Time to Wait", help="Time to wait in minutes before send the Alert")
+
 
 
 class OpenemsConfigUpdate(models.Model):
