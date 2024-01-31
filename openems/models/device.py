@@ -128,7 +128,6 @@ class Device(models.Model):
         return super(Device, self).create(vals)
 
     def _generate_api_key(self):
-        # Generate a random API key in the format you specified
         return ''.join(random.choices(string.ascii_letters + string.digits, k=20))
 
 
