@@ -121,11 +121,32 @@ class Device(models.Model):
 
     @api.model
     def create(self, vals):
+        if 'name' not in vals or not vals['name']:
+            vals['name'] = self._get_new_device_name()
+
+        # Generate setup password if not provided
+        if 'setup_password' not in vals or not vals['setup_password']:
+            vals['setup_password'] = self._generate_unique_setup_password()
+
         # Generate API key if not provided
         if 'apikey' not in vals or not vals['apikey']:
             vals['apikey'] = self._generate_api_key()
 
         return super(Device, self).create(vals)
+
+    def _generate_unique_setup_password(self):
+        is_unique = False
+        setup_password = ''
+        while not is_unique:
+            # Generate a random setup password
+            raw_password = ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
+            setup_password = '-'.join([raw_password[i:i + 4] for i in range(0, len(raw_password), 4)])
+            # Check if the generated setup password already exists
+            existing = self.search_count([('setup_password', '=', setup_password)])
+            # If the password does not exist, it is unique, and we can exit the loop
+            if existing == 0:
+                is_unique = True
+        return setup_password
 
     def _generate_api_key(self):
         # Initialize a flag to indicate whether the generated key is unique
