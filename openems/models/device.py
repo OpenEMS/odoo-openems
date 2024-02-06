@@ -128,7 +128,18 @@ class Device(models.Model):
         return super(Device, self).create(vals)
 
     def _generate_api_key(self):
-        return ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+        # Initialize a flag to indicate whether the generated key is unique
+        is_unique = False
+        api_key = ''
+        while not is_unique:
+            # Generate a random API key
+            api_key = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+            # Check if the generated API key already exists
+            existing = self.search_count([('apikey', '=', api_key)])
+            # If the key does not exist, it is unique, and we can exit the loop
+            if existing == 0:
+                is_unique = True
+        return api_key
 
 
 class DeviceTag(models.Model):
