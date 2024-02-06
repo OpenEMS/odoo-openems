@@ -121,9 +121,7 @@ class Device(models.Model):
 
     @api.model
     def create(self, vals):
-        if 'name' not in vals or not vals['name']:
-            vals['name'] = self._get_new_device_name()
-
+        
         # Generate setup password if not provided
         if 'setup_password' not in vals or not vals['setup_password']:
             vals['setup_password'] = self._generate_unique_setup_password()
@@ -169,6 +167,17 @@ class Device(models.Model):
                 continue
             if not re.match(r"^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$", record.setup_password):
                 raise ValidationError("The device ID must be formatted as XXXX-XXXX-XXXX-XXXX")
+
+    @api.onchange('apikey')
+    def _check_api_key_uniqueness(self):
+        for record in self:
+            if not record.apikey:
+                continue
+            # Check if the API key already exists
+            existing = self.search_count([('apikey', '=', record.apikey), ('id', '!=', record.id)])
+            # If the API key exists, raise a ValidationError
+            if existing > 0:
+                raise ValidationError(_("The API key already exists and must be unique."))
 
 
 class DeviceTag(models.Model):
