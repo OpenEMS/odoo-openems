@@ -1,5 +1,9 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, exceptions, _
 from datetime import datetime
+from odoo.exceptions import ValidationError
+import random
+import re
+import string
 
 class Device(models.Model):
     _name = "openems.device"
@@ -171,17 +175,18 @@ class Device(models.Model):
     @api.onchange('apikey')
     def _check_api_key_uniqueness(self):
         for record in self:
-            if not record.apikey or not record.id:
-                continue
-            # Check if the API key already exists, excluding the current record if it's already saved
-            domain = [('apikey', '=', record.apikey)]
-            if record.id and isinstance(record.id, int):
-                domain.append(('id', '!=', record.id))
-            existing = self.search_count(domain)
-            # If the API key exists, raise a ValidationError
-            if existing > 0:
-                raise ValidationError(_("The API key already exists and must be unique."))
-
+            if record.apikey:
+                # Prepare the domain for searching duplicates
+                domain = [('apikey', '=', record.apikey)]
+                # If the record is already saved (has a valid database ID), exclude it from the search
+                if record.id and isinstance(record.id, (int,)):
+                    domain.append(('id', '!=', record.id))
+                # Check if any other records with the same API key exist
+                existing = self.search_count(domain)
+                # If there are duplicates, raise a ValidationError
+                if existing:
+                    raise ValidationError(
+                        _("The API key already exists and must be unique. Please choose a different API key."))
 
 
 class DeviceTag(models.Model):
