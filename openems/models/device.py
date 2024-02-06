@@ -123,6 +123,28 @@ class Device(models.Model):
             state = 3
         return state
 
+    def write(self, vals):
+        """Prohibit to change name field after creation."""
+        if 'name' in vals:
+            for record in self:
+                if record.id and record.name != vals['name']:
+                    self.env.cr.execute("""
+                        SELECT EXISTS (
+                            SELECT 1 FROM openems_device 
+                            WHERE name = %s AND id != %s
+                        )
+                    """, (vals['name'], record.id))
+                    exists = self.env.cr.fetchone()[0]
+                    if exists:
+                        # This means there's already a device with the intended new name
+                        raise exceptions.UserError(
+                            "The name '{}' is already in use or does not follow the required pattern.".format(
+                                vals['name']))
+    
+                    # If you simply want to prevent name changes, the following UserError suffices
+                    raise exceptions.UserError("The name of the device cannot be changed after creation.")
+        return super(Device, self).write(vals)
+
     @api.model
     def create(self, vals):
         
