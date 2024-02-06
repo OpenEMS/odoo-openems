@@ -171,13 +171,17 @@ class Device(models.Model):
     @api.onchange('apikey')
     def _check_api_key_uniqueness(self):
         for record in self:
-            if not record.apikey:
+            if not record.apikey or not record.id:
                 continue
-            # Check if the API key already exists
-            existing = self.search_count([('apikey', '=', record.apikey), ('id', '!=', record.id)])
+            # Check if the API key already exists, excluding the current record if it's already saved
+            domain = [('apikey', '=', record.apikey)]
+            if record.id and isinstance(record.id, int):
+                domain.append(('id', '!=', record.id))
+            existing = self.search_count(domain)
             # If the API key exists, raise a ValidationError
             if existing > 0:
                 raise ValidationError(_("The API key already exists and must be unique."))
+
 
 
 class DeviceTag(models.Model):
