@@ -162,6 +162,14 @@ class Device(models.Model):
                 is_unique = True
         return api_key
 
+    @api.onchange('setup_password')
+    def _check_setup_password_format(self):
+        for record in self:
+            if not record.setup_password:
+                continue
+            if not re.match(r"^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$", record.setup_password):
+                raise ValidationError("The device ID must be formatted as XXXX-XXXX-XXXX-XXXX")
+
 
 class DeviceTag(models.Model):
     _name = "openems.device_tag"
