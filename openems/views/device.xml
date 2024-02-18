@@ -13,7 +13,7 @@
                 decoration-it="openems_is_connected!=True"
             >
                 <field name="name" string="OpenEMS-Number" />
-                <field name="comment" string="Bezeichnung" />
+                <field name="comment" string="Description" />
                 <field name="producttype" />
                 <field name="openems_version" string="OE Version" />
                 <field name="openems_is_connected" string="OE Connected" />
@@ -31,7 +31,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="OpenEMS-Number" />
-                <field name="comment" string="Bezeichnung" />
+                <field name="comment" string="Description" />
                 <field name="producttype" />
                 <field name="internalnote" />
                 <field name="tag_ids" />
@@ -122,15 +122,15 @@
                                 <field name="emshardware" />
                                 <field name="oem" />
                             </group>
-                            <group string="Produkt">
+                            <group string="Product">
                                 <field name="stock_production_lot_id"/>
                             </group>
                         </page>
-                        <page string="Sicherheit">
+                        <page string="Security">
                             <group>
                                 <field
                                     name="user_role_ids"
-                                    string="Zugriffsrollen im Online-Monitoring"
+                                    string="Access Role in Online-Monitoring"
                                 >
                                     <tree editable="bottom">
                                         <field name="user_id" />
@@ -144,11 +144,11 @@
                                 <field name="setup_password" />
                             </group>
                         </page>
-                        <page string="Inbetriebnahme">
+                        <page string="Installation">
                             <group>
                                 <field
                                     name="setup_protocol_ids"
-                                    string="Inbetriebnahme Protokolle"
+                                    string="Installation Log"
                                 >
                                     <tree>
                                         <field name="create_date" />
@@ -159,7 +159,7 @@
                                 </field>
                             </group>
                         </page>
-                        <page string="Konfiguration">
+                        <page string="Configuration">
                             <group>
                                 <field
                                     name="openems_config_components"
@@ -167,7 +167,7 @@
                                 />
                             </group>
                         </page>
-                        <page string="Konfigurationsänderungen">
+                        <page string="Configuration Updates">
                             <group>
                                 <field
                                     name="openems_config_update_ids"
@@ -175,7 +175,7 @@
                                 />
                             </group>
                         </page>
-                        <page string="Systemmessages">
+                        <page string="System Messages">
                             <field name="systemmessage_ids" readonly="True" />
                         </page>
                     </notebook>
@@ -245,7 +245,7 @@
         </field>
     </record>
 
-    <!-- Systemmessage -->
+    <!-- System Message -->
     <record id="action_openems_systemmessage" model="ir.actions.act_window">
         <field name="name">Systemmessages</field>
         <field name="res_model">openems.systemmessage</field>
