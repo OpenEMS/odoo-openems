@@ -1,5 +1,9 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, exceptions, _
 from datetime import datetime
+from odoo.exceptions import ValidationError
+import random
+import re
+import string
 
 class Device(models.Model):
     _name = "openems.device"
@@ -118,6 +122,93 @@ class Device(models.Model):
         elif string == "fault":
             state = 3
         return state
+
+    def write(self, vals):
+        """Prohibit to change name field after creation."""
+        if 'name' in vals:
+            for record in self:
+                if record.id and record.name != vals['name']:
+                    self.env.cr.execute("""
+                        SELECT EXISTS (
+                            SELECT 1 FROM openems_device 
+                            WHERE name = %s AND id != %s
+                        )
+                    """, (vals['name'], record.id))
+                    exists = self.env.cr.fetchone()[0]
+                    if exists:
+                        # This means there's already a device with the intended new name
+                        raise exceptions.UserError(
+                            "The name '{}' is already in use or does not follow the required pattern.".format(
+                                vals['name']))
+    
+                    # If you simply want to prevent name changes, the following UserError suffices
+                    raise exceptions.UserError("The name of the device cannot be changed after creation.")
+        return super(Device, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        
+        # Generate setup password if not provided
+        if 'setup_password' not in vals or not vals['setup_password']:
+            vals['setup_password'] = self._generate_unique_setup_password()
+
+        # Generate API key if not provided
+        if 'apikey' not in vals or not vals['apikey']:
+            vals['apikey'] = self._generate_api_key()
+
+        return super(Device, self).create(vals)
+
+    def _generate_unique_setup_password(self):
+        is_unique = False
+        setup_password = ''
+        while not is_unique:
+            # Generate a random setup password
+            raw_password = ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
+            setup_password = '-'.join([raw_password[i:i + 4] for i in range(0, len(raw_password), 4)])
+            # Check if the generated setup password already exists
+            existing = self.search_count([('setup_password', '=', setup_password)])
+            # If the password does not exist, it is unique, and we can exit the loop
+            if existing == 0:
+                is_unique = True
+        return setup_password
+
+    def _generate_api_key(self):
+        # Initialize a flag to indicate whether the generated key is unique
+        is_unique = False
+        api_key = ''
+        while not is_unique:
+            # Generate a random API key
+            api_key = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+            # Check if the generated API key already exists
+            existing = self.search_count([('apikey', '=', api_key)])
+            # If the key does not exist, it is unique, and we can exit the loop
+            if existing == 0:
+                is_unique = True
+        return api_key
+
+    @api.onchange('setup_password')
+    def _check_setup_password_format(self):
+        for record in self:
+            if not record.setup_password:
+                continue
+            if not re.match(r"^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$", record.setup_password):
+                raise ValidationError("The device ID must be formatted as XXXX-XXXX-XXXX-XXXX")
+
+    @api.onchange('apikey')
+    def _check_api_key_uniqueness(self):
+        for record in self:
+            if record.apikey:
+                # Prepare the domain for searching duplicates
+                domain = [('apikey', '=', record.apikey)]
+                # If the record is already saved (has a valid database ID), exclude it from the search
+                if record.id and isinstance(record.id, (int,)):
+                    domain.append(('id', '!=', record.id))
+                # Check if any other records with the same API key exist
+                existing = self.search_count(domain)
+                # If there are duplicates, raise a ValidationError
+                if existing:
+                    raise ValidationError(
+                        _("The API key already exists and must be unique. Please choose a different API key."))
 
 
 class DeviceTag(models.Model):
