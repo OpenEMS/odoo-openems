@@ -67,8 +67,8 @@ class Device(models.Model):
 
     # Security
     setup_password = fields.Char(
-        "Installateursschlüssel (Installation key)",
-        help="Passwort für die Inbetriebnahme durch den Installateur",
+        "Installation Key",
+        help="Password for commissioning by the installer",
     )
     apikey = fields.Char("API-Key", required=True, tracking=True)
 
@@ -86,7 +86,7 @@ class Device(models.Model):
 
     # Verknüpfungen
     systemmessage_ids = fields.One2many(
-        "openems.systemmessage", "device_id", string="Systemmessages"
+        "openems.systemmessage", "device_id", string="System Messages"
     )
     user_role_ids = fields.One2many(
         "openems.device_user_role", "device_id", string="Roles", tracking=True
