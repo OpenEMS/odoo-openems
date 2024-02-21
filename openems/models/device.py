@@ -44,9 +44,15 @@ class Device(models.Model):
 
     @api.depends("name")
     def _compute_monitoring_url(self):
+        # Corrected the parameter key to 'edge_monitoring_url'
+        base_url = self.env["ir.config_parameter"].sudo().get_param("edge_monitoring_url", default='#')
         for rec in self:
-            url = self.env["ir.config_parameter"].sudo().get_param("openems.edge_monitoring_url", default='#')
-            rec.monitoring_url = url + rec.name
+            if isinstance(rec.name, str) and rec.name:
+                # Ensuring there is a '/' between base_url and rec.name if it's not already present
+                separator = '' if base_url.endswith('/') else '/'
+                rec.monitoring_url = base_url + separator + rec.name + "/live"
+            else:
+                rec.monitoring_url = base_url
 
     producttype = fields.Selection(
         [
