@@ -30,6 +30,7 @@ class ResUsers(models.Model):
             ("ES", "Spanish"),
             ("FR", "French"),
             ("HU", "Hungarian"),
+            ("JA", "Japanese"),
         ],
         default="DE",
         required=True,
