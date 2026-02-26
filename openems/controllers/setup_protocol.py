@@ -42,8 +42,8 @@ class SetupProtocol(http.Controller):
 
         templates = self.getTemplates(device_rec[0]['oem'], ibnPdf)
 
-        templates['installer'].send_mail(setupProtocolId, force_send=True)
-        templates['customer'].send_mail(setupProtocolId, force_send=True)
+        templates['installer'].send_mail(setupProtocolId)
+        templates['customer'].send_mail(setupProtocolId)
 
         return {}
 
@@ -65,11 +65,17 @@ class SetupProtocol(http.Controller):
         return templates
 
     @http.route('/openems_backend/get_latest_setup_protocol', type='json', auth='user')
-    def get_latest_setup_protocol(self, edge_name):
+    def get_latest_setup_protocol(self, external_uid, edge_name):
+        res_users = http.request.env["res.users"].sudo()
+        user_rec = res_users.search_read(
+            [("oauth_uid", "=", external_uid)],
+            ["login"],
+        )[0]
+
         # search for device
         device_model = request.env['openems.device']
-        device = device_model.search([('name', '=', edge_name)])
-
+        device = device_model.with_user(user_rec[0]).search([('name', '=', edge_name)])
+        
         response = dict()
         if not len(device.setup_protocol_ids) > 0:
             return response

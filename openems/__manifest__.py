@@ -1,7 +1,7 @@
 {
     "name": "OpenEMS",
     "summary": "Everything related to OpenEMS (Open Energy Management System)",
-    "version": "16.0.1.0.1",
+    "version": "18.0.1.0.1",
     "author": "OpenEMS Association e.V.",
     "maintainer": "OpenEMS Association e.V.",
     "contributors": [
@@ -11,7 +11,7 @@
     "website": "https://openems.io",
     "license": "AGPL-3",
     "category": "Specific Industry Applications",
-    "depends": ["base", "web", "mail", "crm", "resource", "stock", "web_m2x_options", "partner_firstname"],
+    "depends": ["base", "web", "mail", "crm", "resource", "stock", "web_m2x_options", "partner_firstname","auth_oauth"],
     "data": [
         "data/ir_config_parameter.xml",
         "data/res_partner_category.xml",

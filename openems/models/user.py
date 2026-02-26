@@ -35,3 +35,12 @@ class ResUsers(models.Model):
         default="DE",
         required=True,
     )
+    oauth_uid = fields.Char(index=True)
+    settings = fields.Text("Custom Settings", readonly=True)
+
+    def get_mapped_language(self):
+        lang = self.env["res.lang"]
+        if self.openems_language == "EN":
+            return lang.search(["code", "=", "en_US"], limit=1)
+        else:
+            return lang.search(["code", "=", "de_DE"], limit=1)

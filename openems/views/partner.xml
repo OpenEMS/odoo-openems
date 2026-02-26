@@ -9,16 +9,16 @@
                 <page string="Setup Protocols" name="setup_protocols">
                     <group>
                         <field name="installer_setup_protocols_ids">
-                            <tree>
+                            <list>
                                 <field name="create_date" />
                                 <field name="device_id" />
-                            </tree>
+                            </list>
                         </field>
                         <field name="customer_setup_protocols_ids">
-                            <tree>
+                            <list>
                                 <field name="create_date" />
                                 <field name="device_id" />
-                            </tree>
+                            </list>
                         </field>
                     </group>
                 </page>
