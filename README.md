@@ -33,3 +33,17 @@ that explains its license.
 
 ----
 <!-- /!\ Non OCA Context : Set here the full description of your organization. -->
+
+
+## Keycloak
+
+To integrate Keycloak as a OAuth provider in Odoo, you need to install the following OCA module:
+<br/>
+[auth_oidc](https://github.com/OCA/server-auth/tree/18.0/auth_oidc)
+
+
+## Multi Session Odoo
+
+If you wish to enable multiple connections for the same account with an OAuth provider in Odoo, you'll need to install this OCA module:
+<br/>
+[auth_oauth_multi_token](https://github.com/OCA/server-auth/tree/18.0/auth_oauth_multi_token)

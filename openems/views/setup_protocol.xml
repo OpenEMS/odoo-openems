@@ -20,6 +20,7 @@
                         <field name="installer_id" />
                         <field name="customer_id" />
                         <field name="different_location_id" />
+                        <field name="type" />
                         <field name="productionlot_ids" />
                         <field name="item_ids" />
                     </group>
@@ -32,12 +33,12 @@
         <field name="name">SetupProtocolProductionLot: Tree</field>
         <field name="model">openems.setup_protocol_production_lot</field>
         <field name="arch" type="xml">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="sequence" widget="handle" />
                 <field name="category" />
                 <field name="name" />
                 <field name="lot_id" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -45,14 +46,14 @@
         <field name="name">SetupProtocolItem: Tree</field>
         <field name="model">openems.setup_protocol_item</field>
         <field name="arch" type="xml">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="sequence" widget="handle" />
                 <field name="category" />
                 <field name="name" />
                 <field name="value" />
                 <field name="view" />
                 <field name="field" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -60,12 +61,12 @@
         <field name="name">SetupProtocol: Tree</field>
         <field name="model">openems.setup_protocol</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="create_date" />
                 <field name="device_id" />
                 <field name="installer_id" />
                 <field name="customer_id" />
-            </tree>
+            </list>
         </field>
     </record>
 
