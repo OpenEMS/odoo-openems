@@ -29,6 +29,7 @@ class Device(models.Model):
         "First Setup Protocol Date", compute="_compute_first_setup_protocol"
     )
     manual_setup_date = fields.Datetime("Manual Setup Date")
+    settings = fields.Json()
 
     @api.depends("setup_protocol_ids", "manual_setup_date")
     def _compute_first_setup_protocol(self):
@@ -112,7 +113,7 @@ class Device(models.Model):
     )
 
     # Helper fields
-    name_number = fields.Integer(compute="_compute_name_number", store="True")
+    name_number = fields.Integer(compute="_compute_name_number", store=True, index=True)
 
     @api.depends("name")
     def _compute_name_number(self):
@@ -252,7 +253,7 @@ class OpenemsConfigUpdate(models.Model):
     _description = "OpenEMS Edge Device Configuration Update"
     _order = "create_date desc"
 
-    device_id = fields.Many2one("openems.device", string="OpenEMS Edge")
+    device_id = fields.Many2one("openems.device", string="OpenEMS Edge",index=True)
     teaser = fields.Text("Update Details Teaser")
     details = fields.Html("Update Details")
 
@@ -263,7 +264,7 @@ class Systemmessage(models.Model):
     _order = "create_date desc"
 
     timestamp = fields.Datetime("Creation date")
-    device_id = fields.Many2one("openems.device", string="OpenEMS Edge")
+    device_id = fields.Many2one("openems.device", string="OpenEMS Edge",index=True)
     text = fields.Text("Message")
     text_teaser = fields.Char(compute="_compute_text_teaser")
 
@@ -294,19 +295,19 @@ class Alerting(models.Model):
     offline_last_notification = fields.Datetime(string="Last Offline notification sent")
     sum_state_last_notification = fields.Datetime(string="Last SumState notification sent")
 
-    device_name = fields.Text(compute="_compute_device_name", store="True")
-    user_login = fields.Text(compute="_compute_user_login", store="True")
+    device_name = fields.Text(compute="_compute_device_name", store=True)
+    user_login = fields.Text(compute="_compute_user_login", store=True)
 
     user_role = fields.Selection(
         [("admin", "Admin"), ("installer", "Installer"), ("owner", "Owner"), ("guest", "Guest"),],
-        compute="_compute_user_role", store="False")
+        compute="_compute_user_role", store=False)
 
     @api.depends("device_id")
     def _compute_device_name(self):
         for rec in self:
             rec.device_name = rec.device_id.name;
 
-    @api.depends("user_id")
+    @api.depends("user_id","user_id.login")
     def _compute_user_login(self):
         for rec in self:
             rec.user_login = rec.user_id.login;

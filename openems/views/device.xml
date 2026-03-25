@@ -5,7 +5,7 @@
         <field name="name">Device: Tree</field>
         <field name="model">openems.device</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-danger="openems_is_connected==True and openems_sum_state_level=='fault'"
                 decoration-warning="openems_is_connected==True and openems_sum_state_level=='warning'"
                 decoration-success="openems_is_connected==True"
@@ -21,7 +21,7 @@
                 <field name="openems_sum_state_level" string="OE State" />
                 <field name="internalnote" />
                 <field name="tag_ids" widget="many2many_tags" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -50,6 +50,15 @@
                         string="OpenEMS Version"
                         context="{'group_by': 'openems_version'}"
                     />
+                    <field
+                        string="Setup protocol type"
+                        name="setup_protocol_ids"
+                        filter_domain="[('setup_protocol_ids.type','ilike',self)]" />
+                    <field
+                        string="Seriennummern"
+                        name="setup_protocol_ids"
+                        filter_domain="['|', '|',('setup_protocol_ids.productionlot_ids.lot_id.name','ilike',self),('openems_config_components','ilike',self),('setup_protocol_ids.item_ids.value','ilike',self)]" />
+
                 </group>
             </search>
         </field>
@@ -132,10 +141,10 @@
                                     name="user_role_ids"
                                     string="Access Role in Online-Monitoring"
                                 >
-                                    <tree editable="bottom">
+                                    <list editable="bottom">
                                         <field name="user_id" />
                                         <field name="role" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </group>
                             <group>
@@ -149,12 +158,13 @@
                                     name="setup_protocol_ids"
                                     string="Installation Log"
                                 >
-                                    <tree>
+                                    <list>
                                         <field name="create_date" />
                                         <field name="installer_id" />
                                         <field name="customer_id" />
                                         <field name="different_location_id" />
-                                    </tree>
+                                        <field name="type" />
+                                    </list>
                                 </field>
                             </group>
                         </page>
@@ -183,25 +193,27 @@
                                     name="alerting_settings"
                                     string="Alerting Settings"
                                 >
-                                    <tree editable="bottom">
+                                    <list editable="bottom">
                                         <field name="user_id" />
+                                        <field name="offline_last_notification" readonly="True" />
+                                        <field name="sum_state_last_notification" readonly="True" />
                                         <field name="offline_delay" />
                                         <field name="warning_delay" />
                                         <field name="fault_delay" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </group>
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
+                <chatter>
                     <field
                         name="message_follower_ids"
                         widget="mail_followers"
                         groups="base.group_user"
                     />
                     <field name="message_ids" widget="mail_thread" />
-                </div>
+                </chatter>
             </form>
         </field>
     </record>
@@ -210,10 +222,10 @@
         <field name="name">Device DeviceUserRole: Tree</field>
         <field name="model">openems.device_user_role</field>
         <field name="arch" type="xml">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="user_id" />
                 <field name="role" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -221,7 +233,7 @@
         <field name="name">Devices</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">openems.device</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="device_search_view" />
     </record>
 
@@ -235,11 +247,11 @@
         <field name="name">Device Configuration Updates: Tree</field>
         <field name="model">openems.openemsconfigupdate</field>
         <field name="arch" type="xml">
-            <tree string="OpenEMS Configuration Updates">
+            <list string="OpenEMS Configuration Updates">
                 <field name="create_date" />
                 <field name="device_id" />
                 <field name="teaser" string="Details" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -269,11 +281,11 @@
         <field name="name">Device Systemmessage: Tree</field>
         <field name="model">openems.systemmessage</field>
         <field name="arch" type="xml">
-            <tree string="Users">
+            <list string="Users">
                 <field name="device_id" />
                 <field name="timestamp" />
                 <field name="text_teaser" />
-            </tree>
+            </list>
         </field>
     </record>
 

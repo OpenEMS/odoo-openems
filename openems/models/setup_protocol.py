@@ -6,15 +6,24 @@ class SetupProtocol(models.Model):
     _description = "OpenEMS Edge Setup Protocols (IBN)"
     _order = "create_date desc"
 
-    customer_id = fields.Many2one("res.partner", "Customer", required=True)
+    customer_id = fields.Many2one("res.partner", "Customer")
     different_location_id = fields.Many2one("res.partner", "Different Location")
-    installer_id = fields.Many2one("res.partner", "Installer", required=True)
+    installer_id = fields.Many2one("res.partner", "Installer")
     device_id = fields.Many2one("openems.device", "OpenEMS Edge", required=True)
     productionlot_ids = fields.One2many(
         "openems.setup_protocol_production_lot", "setup_protocol_id", "Serial Numbers"
     )
     item_ids = fields.One2many(
         "openems.setup_protocol_item", "setup_protocol_id", "Entry Items"
+    )
+    type = fields.Selection(
+        [
+            ("setup-protocol", "Setup protocol"),
+            ("ems-exchange", "EMS exchange"),
+            ("capacity-extension", "Capacity extension"),
+        ],
+        "Type",
+        default="setup-protocol",
     )
 
 

@@ -24,7 +24,7 @@ class User(http.Controller):
         }
         # send mail
         template.with_context(email_values).send_mail(
-            res_id=partner_id[0], force_send=True)
+            res_id=partner_id[0])
         return {}
 
     def getTemplate(self, oem: str):
