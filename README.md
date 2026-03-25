@@ -34,6 +34,59 @@ that explains its license.
 ----
 <!-- /!\ Non OCA Context : Set here the full description of your organization. -->
 
+## How to create a docker container for testing
+
+### 1. Create Folder
+
+```shell
+mkdir openems-odoo/
+cd openems-odoo/
+```
+
+### 2. Get odoo addons
+
+```shell
+mkdir addons
+
+git clone https://github.com/OCA/partner-contact.git -b 18.0 ./addons/oca-partner-contact
+git clone https://github.com/OCA/web.git -b 18.0 ./addons/oca-web
+git clone https://github.com/OpenEMS/odoo-openems.git -b 18.0 ./addons/odoo-openems
+
+chmod -R +rx addons/
+```
+
+### 3. Create `docker-compose.yaml`
+
+```YAML
+services:
+  web:
+    image: odoo:18.0
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./addons/odoo-openems/openems:/mnt/extra-addons/openems
+      - ./addons/oca-web/web_m2x_options:/mnt/extra-addons/web_m2x_options
+      - ./addons/oca-partner-contact/partner_firstname:/mnt/extra-addons/partner_firstname
+
+  db:
+    image: postgres:18
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+```
+
+> **NOTE**: for more information about base image see: https://hub.docker.com/_/odoo/
+
+### 4. Start Container
+
+```shell
+docker compose up -d
+```
 
 ## Keycloak
 
