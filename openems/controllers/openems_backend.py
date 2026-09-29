@@ -221,8 +221,9 @@ class OpenemsBackend(http.Controller):
                 for _ in range(len(additional_domains) - 1):
                     logical_operators.insert(0, '&')
 
-        # insert 'and' if both are not 'None'
-        if query and searchParams:
+        # insert 'and' only if both query and an actual filter domain exist
+        # (searchParams may be truthy from orderState alone, which contributes no domain)
+        if query and additional_domains:
             logical_operators.insert(0, '&')
 
         domains.extend(additional_domains)
