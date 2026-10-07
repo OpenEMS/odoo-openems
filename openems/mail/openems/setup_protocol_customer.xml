@@ -4,7 +4,7 @@
         <record id="setup_protocol_email_customer" model="mail.template">
             <field name="name">E-Mail setup protocol for customer</field>
             <field name="model_id" ref="model_openems_setup_protocol" />
-            <field name="email_from"><![CDATA[OpenEMS Association e.V.<noreply@openems.io>]]></field>
+            <field name="email_from"><![CDATA[OpenEMS Association e.V. <noreply@openems.io>]]></field>
             <field name="partner_to">{{object.customer_id.id}}</field>
             <field name="subject"
             >Your OpenEMS setup protocol for {{object.openems_device_id.name}}</field>
